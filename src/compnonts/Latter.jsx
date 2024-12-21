@@ -355,7 +355,7 @@ export default function Latter() {
       </div>
 
       {/* Fixed Bottom Sound Control */}
-      <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 flex items-center space-x-2 bg-pink-400 text-white px-4 py-2 rounded-full shadow-lg">
+      <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 flex items-center space-x-2 bg-pink-600 text-white px-4 py-2 rounded-full shadow-lg">
         <button
           onClick={toggleMute}
           className="text-base"
