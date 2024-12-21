@@ -53,11 +53,6 @@ export default function Latter() {
   }, []);
 
   
-
-
-
-
-
   const latter = [
     { text: "My dearest friend,", rotation: "rotate-[4deg]", bgColor: "bg-pink-300", textColor: "text-pink-800", font: "font-script" },
     { text: "Every moment spent with you feels like a blessing, a cherished gift that life has granted me. 🎁 On this special day, I not only celebrate your birthday 🎂 but also honor the beautiful soul you are. 🌟", bgColor: "bg-blue-100", textColor: "text-blue-800", font: "font-handwritten" },
