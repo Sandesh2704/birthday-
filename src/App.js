@@ -35,13 +35,13 @@ export default function App() {
               animate={{ scale: 1.5, rotate: 360 }}
               exit={{ scale: 0, rotate: -360 }}
               transition={{ duration: 1 }}
-              className="text-9xl"
+              className="text-4xl"
             >
               {emojis[5 - countdown]} {/* Display emoji based on countdown */}
             </motion.div>
 
             <motion.p
-              className="text-4xl mt-8 font-bold text-gray-700"
+              className="text-3xl mt-10 font-bold text-gray-700"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.5 }}
