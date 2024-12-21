@@ -32,7 +32,7 @@ export default function App() {
             <motion.div
               key={countdown}
               initial={{ scale: 0, rotate: 0 }}
-              animate={{ scale: 1.5, rotate: 360 }}
+              animate={{ scale: 1.3, rotate: 360 }}
               exit={{ scale: 0, rotate: -360 }}
               transition={{ duration: 1 }}
               className="text-4xl"
