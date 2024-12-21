@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/Sandesh2704/birthday-.git/static/css/main.6abaa5f6.css",
+    "main.js": "/Sandesh2704/birthday-.git/static/js/main.7cc789e5.js",
+    "static/js/488.2c2c4401.chunk.js": "/Sandesh2704/birthday-.git/static/js/488.2c2c4401.chunk.js",
+    "index.html": "/Sandesh2704/birthday-.git/index.html",
+    "main.6abaa5f6.css.map": "/Sandesh2704/birthday-.git/static/css/main.6abaa5f6.css.map",
+    "main.7cc789e5.js.map": "/Sandesh2704/birthday-.git/static/js/main.7cc789e5.js.map",
+    "488.2c2c4401.chunk.js.map": "/Sandesh2704/birthday-.git/static/js/488.2c2c4401.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.6abaa5f6.css",
+    "static/js/main.7cc789e5.js"
+  ]
+}
