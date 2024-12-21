@@ -35,7 +35,7 @@ export default function App() {
               animate={{ scale: 1.3, rotate: 360 }}
               exit={{ scale: 0, rotate: -360 }}
               transition={{ duration: 1 }}
-              className="text-4xl"
+              className="text-6xl"
             >
               {emojis[5 - countdown]} {/* Display emoji based on countdown */}
             </motion.div>
