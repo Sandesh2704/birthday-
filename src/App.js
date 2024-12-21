@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import Latter from './compnonts/Latter';
+import Latter from './Latter';
 export default function App() {
   const [countdown, setCountdown] = useState(5); // Countdown starts from 5
   const [showLatter, setShowLatter] = useState(false); // Toggle letter display
