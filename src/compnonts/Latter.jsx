@@ -1,205 +1,168 @@
-import { useEffect, useRef, useState } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { use, useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
-import { DotLottieReact } from "@lottiefiles/dotlottie-react";
-import video from "../asset/Happy Birthday to You - piano instrumental with lyrics.mp4"
+import audioFile from "../asset/a-birthday-to-remember-201324.mp3";
 
-gsap.registerPlugin(ScrollTrigger);
+export default function Latter({ isAutoOpened = false }) {
+  const [linesVisible, setLinesVisible] = useState(0);
+  const [typedText, setTypedText] = useState("");
+  const [isPlaying, setIsPlaying] = useState(true);
+  const audioRef = useRef(null);
 
-export default function Latter() {
-  const wrapperRef = useRef(null);
-  const cardsRef = useRef([]);
-  const videoRef = useRef(null); // Ref for the hidden video
-  const [isMuted, setIsMuted] = useState(true); // State for sound control
+  const lines = [
+    "Happy Birthday.",
+    "Another year has passed, and you continue to be someone rare and unforgettable.",
+    "You carry a softness that doesn't make you weak, a quiet strength, and a kindness that feels like calm water.",
+    "I hope this new chapter brings you stories worth sharing, people who truly understand you, and moments that remind you how beautiful your journey already is.",
+    "You deserve peace in your heart, love that feels gentle, dreams that feel possible, and smiles that arrive without effort.",
+    "Thank you for being the kind of person who adds colour to other people's days, often without even realising it.",
+    "We don't talk much anymore, and maybe I'm easy to forget — but trust me, I never forgot you.",
+    "Even with distance and silence, the respect and care I have for you never changed.",
+    "May this year bring warmth, comfort, small surprises, and a little bit of magic into your everyday life.",
+    "And even from far away, I'm quietly cheering for you — always wishing you the best.",
+    "Happy Birthday, again."
+  ];
 
-  useEffect(() => {
-    const wrapper = wrapperRef.current;
-    const cards = cardsRef.current;
-    const animation = gsap.timeline();
-    let cardHeight = 0;
-    const headerHeight = wrapper?.children[0]?.offsetHeight || 0;
 
-    const initCards = () => {
-      if (!cards.length) return;
-
-      animation.clear();
-      cardHeight = cards[0]?.offsetHeight || 0;
-      cards.forEach((card, index) => {
-        if (card && index > 0) {
-          gsap.set(card, { y: index * cardHeight });
-          animation.to(card, { y: 0, duration: index * 0.5, ease: "none" }, 0);
+  const toggleAudio = () => {
+    if (audioRef.current) {
+      if (isPlaying) {
+        audioRef.current.pause();
+      } else {
+        const playPromise = audioRef.current.play();
+        if (playPromise !== undefined) {
+          playPromise.catch(() => {
+            // Autoplay was prevented, but we can ignore this
+          });
         }
-      });
-    };
-
-    initCards();
-
-    const scrollTrigger = ScrollTrigger.create({
-      trigger: wrapper,
-      start: "top top",
-      pin: true,
-      end: () => `+=${cards.length * cardHeight + headerHeight}`,
-      scrub: true,
-      animation: animation,
-      markers: false,
-      invalidateOnRefresh: true,
-    });
-
-    ScrollTrigger.addEventListener("refreshInit", initCards);
-
-    return () => {
-      scrollTrigger.kill();
-      ScrollTrigger.removeEventListener("refreshInit", initCards);
-    };
-  }, []);
-
-  const toggleMute = () => {
-    if (videoRef.current) {
-      videoRef.current.muted = !videoRef.current.muted;
-      setIsMuted(videoRef.current.muted);
+      }
+      setIsPlaying(!isPlaying);
     }
   };
 
-
-  const latter = [
-    { text: "My dearest friend,", rotation: "rotate-[4deg]", bgColor: "bg-pink-300", textColor: "text-pink-800", font: "font-script" },
-    { text: "Every moment spent with you feels like a blessing, a cherished gift that life has granted me. 🎁 On this special day, I not only celebrate your birthday 🎂 but also honor the beautiful soul you are. 🌟", bgColor: "bg-blue-100", textColor: "text-blue-800", font: "font-handwritten" },
-    { text: "Your unwavering positivity and boundless energy inspire me in ways words cannot express. 🌈 You have a unique ability to turn ordinary moments into extraordinary memories, and your presence brings comfort and joy that I treasure deeply.", bgColor: "bg-green-100", textColor: "text-green-800", font: "font-cursive" },
-    { text: "As you step into another remarkable year of your life, I wish you all the happiness 🌼 and success 🏆 that your heart can hold. You deserve the world and more 🌍 for the incredible person you are.", bgColor: "bg-purple-300", textColor: "text-purple-800", font: "font-elegant" },
-    { text: "With all my gratitude\nYour forever friend ❤️", bgColor: "bg-yellow-100", textColor: "text-yellow-800", font: "font-romantic" },
-  ];
-
-  const generateLatterWithRotation = (latter) =>
-    latter.map((item, index) => ({
-      ...item,
-      rotation: (index % 2 === 0 ? 1 : -1) * (1 + index * 1),
-    }));
-
-  const rotatedLatter = generateLatterWithRotation(latter);
-
-
-  
+  // Sequentially reveal each line, then type it out for a gentle effect
   useEffect(() => {
-    const video = videoRef.current;
+    let mounted = true;
+    const reveal = async () => {
+      for (let i = 0; i < lines.length; i++) {
+        if (!mounted) return;
+        setLinesVisible(i + 1);
+        // type the line
+        setTypedText("");
+        const text = lines[i];
+        for (let k = 0; k <= text.length; k++) {
+          if (!mounted) return;
+          setTypedText(text.slice(0, k));
+          // speed up for punctuation
+          await new Promise((r) => setTimeout(r, 18 + (text[k] === ' ' ? 0 : 6)));
+        }
+        // pause before next line
+        await new Promise((r) => setTimeout(r, 700));
+      }
+    };
 
-    if (video) {
-      // Attempt to play video with sound on load
-      video.muted = false;
-      video.volume = 1;
-      const playPromise = video.play();
+    reveal();
 
-      // Handle play promise rejection
-      if (playPromise !== undefined) {
-        playPromise
-          .then(() => {
-            console.log("Video playing with sound!");
-          })
-          .catch((error) => {
-            console.warn("Autoplay with sound failed. Muting video.", error);
-            video.muted = true;
-            video.play();
+    // Try to play gentle background audio
+    const audio = audioRef.current;
+    if (audio) {
+      audio.volume = 0.18;
+      
+      // Handle autoplay differently based on how letter was opened
+      if (isAutoOpened) {
+        // For auto-open, wait a bit before playing to avoid autoplay restrictions
+        setTimeout(() => {
+          const playPromise = audio.play();
+          if (playPromise !== undefined) {
+            playPromise.catch(() => {
+              // Autoplay was prevented, user will need to click play button
+              setIsPlaying(false);
+            });
+          }
+        }, 500);
+      } else {
+        // For manual open, try playing immediately
+        const playPromise = audio.play();
+        if (playPromise !== undefined) {
+          playPromise.catch(() => {
+            // Autoplay was prevented
+            setIsPlaying(false);
           });
+        }
       }
     }
-  }, []);
+
+    return () => { 
+      mounted = false; 
+    };
+  }, [isAutoOpened]);
 
   return (
-    <>
-   <div>
-      <video
-        ref={videoRef}
-        src={video}
-        autoPlay
-        loop
-        controls
-        className="w-full h-auto hidden"
-      />
-    </div>
+    <div className="min-h-screen flex items-center justify-center py-6   relative">
+      <audio ref={audioRef} src={audioFile} loop />
+      
+      {/* Audio Control Button */}
+      <motion.button
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ delay: 0.5 }}
+        onClick={toggleAudio}
+          className="fixed bottom-6 z-50 right-6 bg-rose-500 text-white px-4 py-2 rounded-full shadow-lg text-sm"
+      whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.95 }}
+      >
+      
 
-      {/* Main Content */}
-      <div className="App bg-gradient-to-b from-pink-100 to-purple-100 min-h-screen">
-        <div className="max-w-7xl mx-auto px-4 py-8">
-          <header className="text-center mb-12">
-            <motion.div
-              className="inline-block"
-              animate={{ y: [0, -10, 0] }}
-              transition={{ repeat: Infinity, duration: 1.5 }}
-            >
-              <i className="fas fa-heart text-5xl text-red-400 mb-4"></i>
-            </motion.div>
-            <motion.h1
-              className="font-dancing text-5xl md:text-7xl text-custom mb-4"
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ duration: 0.7 }}
-            >
-              Happy Birthday!
-            </motion.h1>
-            <motion.p
-              className="text-xl text-gray-600"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.5 }}
-            >
-              To my dearest friend
-            </motion.p>
-          </header>
+         {isPlaying ? "Pause Music" : "Play Music"}
+      </motion.button>
 
-          <motion.main
-            className="relative"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 1 }}
-          >
-            <motion.div className="max-w-3xl mx-auto bg-white rounded-lg shadow-md p-8 md:p-12 mb-12">
-              <div className="text-center mb-8">
-                <DotLottieReact
-                  src="https://lottie.host/2b531185-5481-4614-959d-f68204ea3dcb/uucdJnb8Xz.lottie"
-                  className="w-64 h-64 mx-auto mb-8 object-contain"
-                  loop
-                  autoplay
-                />
-                <h2 className="font-dancing text-3xl md:text-4xl text-custom mb-6">To My Closest Friend</h2>
-                <p className="text-lg text-gray-700 leading-relaxed mb-6">
-                  On your special day, I want you to know how much you mean to me. You light up my life in countless ways, and your friendship is the most precious gift I could ever ask for.
-                </p>
-              </div>
-            </motion.div>
-          </motion.main>
-
-          <div ref={wrapperRef} className="relative py-20 mt-10">
-            <div className="relative h-[60vh] w-full md:w-[30%]">
-              {rotatedLatter.map(({ text, bgColor, textColor, font, rotation }, index) => (
-                <div
-                  key={index}
-                  ref={(el) => (cardsRef.current[index] = el)}
-                  className={`absolute w-full h-72 px-6 py-4 flex items-center justify-center rounded-3xl text-left ${bgColor} ${textColor} ${font} shadow-lg transform transition-all duration-300 hover:scale-105 text-balance text-center`}
-                  style={{ transform: `rotate(${rotation}deg)` }}
-                >
-                  <p className="text-lg leading-relaxed">{text}</p>
-                </div>
-              ))}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.98 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.6 }}
+        className="w-full max-w-3xl bg-white/80 backdrop-blur-md rounded-3xl shadow-2xl overflow-hidden"
+      >
+        <div className="py-8 px-4 md:py-12">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-3xl md:text-4xl font-semibold text-rose-600">For You</h2>
+              <p className="text-sm text-gray-500 mt-1">A small, honest note — wrapped with care.</p>
             </div>
+            <div className="text-2xl">🎈</div>
           </div>
 
-          <footer className="text-center text-gray-600 text-2xl">
-            <p className="mb-4">Made by Me for you</p>
-          </footer>
-        </div>
-      </div>
+          <div className="mt-8 grid gap-4">
+            <div className="text-gray-700 text-lg leading-relaxed">
+              {/* Show the typed text as it appears. Keep the previous lines that finished fully visible. */}
+              {lines.slice(0, linesVisible - 1).map((l, i) => (
+                <motion.p key={i} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.12 }} className="mb-3">
+                  {l}
+                </motion.p>
+              ))}
 
-      {/* Fixed Bottom Sound Control */}
-      <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 flex items-center space-x-2 bg-pink-600 text-white px-4 py-2 rounded-full shadow-lg">
-        <button
-          onClick={toggleMute}
-          className="text-base"
-        >
-       Sounds  {isMuted ? "🔇" : "🔊"}
-        </button>
-      </div>
-    </>
+              {/* Current typing line */}
+              {linesVisible > 0 && (
+                <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.18 }} className="mb-3 text-justify">
+                  {typedText}
+                  <span className="inline-block w-1 h-6 align-middle bg-gray-700 ml-1 animate-blink" />
+                </motion.p>
+              )}
+            </div>
+
+            <div className="mt-6">
+              <div className="bg-rose-50 border border-rose-100 rounded-xl p-4 text-sm text-gray-600">
+                Always cheering for you, in all the big and small moments.
+              </div>
+            </div>
+
+            <div className="flex items-center justify-between mt-6">
+              <div className="text-sm text-gray-500">From someone who never forgot.</div>
+              <div className="text-sm text-gray-500 text-end">— With warmth</div>
+            </div>
+          </div>
+        </div>
+      </motion.div>
+
+      <style>{`@keyframes blink { 0% { opacity: 1 } 50% { opacity: 0 } 100% { opacity: 1 } } .animate-blink { animation: blink 1s linear infinite; }`}</style>
+    </div>
   );
 }
-
-
