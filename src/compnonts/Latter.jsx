@@ -1,6 +1,22 @@
-import { use, useEffect, useRef, useState } from "react";
+import {  useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import audioFile from "../asset/a-birthday-to-remember-201324.mp3";
+
+
+const LINES = [
+  "Happy Birthday.",
+  "Another year has passed, and you continue to be someone rare and unforgettable.",
+  "You carry a softness that doesn't make you weak, a quiet strength, and a kindness that feels like calm water.",
+  "I hope this new chapter brings you stories worth sharing, people who truly understand you, and moments that remind you how beautiful your journey already is.",
+  "You deserve peace in your heart, love that feels gentle, dreams that feel possible, and smiles that arrive without effort.",
+  "Thank you for being the kind of person who adds colour to other people's days, often without even realising it.",
+  "We don't talk much anymore, and maybe I'm easy to forget — but trust me, I never forgot you.",
+  "Even with distance and silence, the respect and care I have for you never changed.",
+  "May this year bring warmth, comfort, small surprises, and a little bit of magic into your everyday life.",
+  "And even from far away, I'm quietly cheering for you — always wishing you the best.",
+  "Happy Birthday, again."
+];
+
 
 export default function Latter({ isAutoOpened = false }) {
   const [linesVisible, setLinesVisible] = useState(0);
@@ -8,20 +24,7 @@ export default function Latter({ isAutoOpened = false }) {
   const [isPlaying, setIsPlaying] = useState(true);
   const audioRef = useRef(null);
 
-  const lines = [
-    "Happy Birthday.",
-    "Another year has passed, and you continue to be someone rare and unforgettable.",
-    "You carry a softness that doesn't make you weak, a quiet strength, and a kindness that feels like calm water.",
-    "I hope this new chapter brings you stories worth sharing, people who truly understand you, and moments that remind you how beautiful your journey already is.",
-    "You deserve peace in your heart, love that feels gentle, dreams that feel possible, and smiles that arrive without effort.",
-    "Thank you for being the kind of person who adds colour to other people's days, often without even realising it.",
-    "We don't talk much anymore, and maybe I'm easy to forget — but trust me, I never forgot you.",
-    "Even with distance and silence, the respect and care I have for you never changed.",
-    "May this year bring warmth, comfort, small surprises, and a little bit of magic into your everyday life.",
-    "And even from far away, I'm quietly cheering for you — always wishing you the best.",
-    "Happy Birthday, again."
-  ];
-
+ const lines = LINES;
 
   const toggleAudio = () => {
     if (audioRef.current) {
@@ -94,7 +97,7 @@ export default function Latter({ isAutoOpened = false }) {
     return () => { 
       mounted = false; 
     };
-  }, [isAutoOpened]);
+  }, [isAutoOpened, lines]);
 
   return (
     <div className="min-h-screen flex items-center justify-center py-6   relative">
